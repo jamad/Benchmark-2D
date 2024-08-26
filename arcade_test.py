@@ -6,7 +6,7 @@ WIN_SIZE = 画面幅, 画面高 = 1600, 900
 SPRITE_DIR_PATH = 'W:/Benchmark-2D/assets/sprites'
 FONT_SIZE = 40
 SPEED = 200
-クリック毎の生成数 = 100
+生成数 = 100
 
 class スプライト(arcade.Sprite):
     def __init__(self, images, x, y):
@@ -14,16 +14,16 @@ class スプライト(arcade.Sprite):
         self.center_x, self.center_y = x, y
         self.texture = choice(images)
         self.angle = 0
-        self.rot_vel = randrange(-SPEED, SPEED)
-        self.vel_x = randrange(-SPEED, SPEED)
-        self.vel_y = randrange(-SPEED, SPEED)
+        self.rv = randrange(-SPEED, SPEED)
+        self.vx = randrange(-SPEED, SPEED)
+        self.vy = randrange(-SPEED, SPEED)
 
-    def update(self, delta_time):
-        self.angle += self.rot_vel * delta_time
-        self.center_x += self.vel_x * delta_time
-        self.center_y += self.vel_y * delta_time
-        if not (0 <= self.center_x <= 画面幅): self.vel_x *= -1
-        if not (0 <= self.center_y <= 画面高): self.vel_y *= -1
+    def update(self, dt):
+        self.angle += self.rv * dt
+        self.center_x += self.vx * dt
+        self.center_y += self.vy * dt
+        if not (0 <= self.center_x <= 画面幅): self.vx *= -1
+        if not (0 <= self.center_y <= 画面高): self.vy *= -1
 
 class 俺アプリ(arcade.Window):
     def __init__(self):
@@ -36,17 +36,16 @@ class 俺アプリ(arcade.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
-            self.スプライト数 += クリック毎の生成数
-            for _ in range(クリック毎の生成数): self.sprites.append(スプライト(self.images, x, y))
+            self.スプライト数 += 生成数
+            for _ in range(生成数): self.sprites.append(スプライト(self.images, x, y))
         elif button == arcade.MOUSE_BUTTON_RIGHT:
-            count = min(クリック毎の生成数, len(self.sprites))
+            count = min(生成数, len(self.sprites))
             self.スプライト数 -= count
             for _ in range(count):self.sprites.pop()
 
     def on_update(self, delta_time):
         self.sprites.update(delta_time)
-        self.FPS = 1//delta_time
-        self.文字.text = f'{self.FPS} FPS | {self.スプライト数} SPRITES'
+        self.文字.text = f'{1//delta_time} FPS | {self.スプライト数} SPRITES'
 
     def on_draw(self):
         self.clear()
