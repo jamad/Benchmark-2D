@@ -86,9 +86,7 @@ class App(arcade.Window):
         self.sprite_handler = SpriteHandler(self)
 
     def draw_fps(self):
-        #arcade.draw_xywh_rectangle_filled(self.text.x, self.text.y, *self.text.content_size,                                          arcade.color.BLACK)
         self.text.text = f'{round(1 / self.dt, 1)} FPS | {len(self.sprite_handler.sprites)} SPRITES'
-        #self.text.text = f'{round(1 / self.dt, 1)} FPS '
         self.text.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -96,7 +94,6 @@ class App(arcade.Window):
             self.sprite_handler.add_sprite(x, y)
         elif button == arcade.MOUSE_BUTTON_RIGHT:
             self.sprite_handler.del_sprite()
-        print('mouse clicked')
 
     def on_update(self, delta_time):
         #self.sprite_handler.update()
