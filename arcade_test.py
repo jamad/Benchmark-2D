@@ -34,11 +34,12 @@ class 俺アプリ(arcade.Window):
         self.文字 = arcade.Text(text='text', x=0, y=画面高 - FONT_SIZE, font_size=FONT_SIZE, color=arcade.color.GREEN, bold=True)
         self.スプライト数 = 1
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        if button == arcade.MOUSE_BUTTON_LEFT:
+    def on_mouse_press(self, x, y, btn, modifiers):
+        if btn == arcade.MOUSE_BUTTON_LEFT:
             self.スプライト数 += 生成数
-            for _ in range(生成数): self.sprites.append(スプライト(self.images, x, y))
-        elif button == arcade.MOUSE_BUTTON_RIGHT:
+            for _ in range(生成数): 
+                self.sprites.append(スプライト(self.images, x, y))
+        elif btn == arcade.MOUSE_BUTTON_RIGHT:
             count = min(生成数, len(self.sprites))
             self.スプライト数 -= count
             for _ in range(count):self.sprites.pop()
