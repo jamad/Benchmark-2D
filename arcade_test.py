@@ -1,6 +1,6 @@
 import arcade
 import pathlib
-from random import randrange
+from random import randrange,choice
 
 WIN_SIZE = 画面幅, 画面高 = 1600, 900
 SPRITE_DIR_PATH = 'W:/Benchmark-2D/assets/sprites'
@@ -13,23 +13,18 @@ class スプライト(arcade.Sprite):
     def __init__(self, handler, x, y):
         super().__init__()
         self.handler = handler
-        self.position=(x,y)
-        self.image_ind = randrange(len(handler.images)) 
-        self.texture = handler.images[self.image_ind]
+        self.position=(x,y) 
+        self.texture = choice(handler.images)
         self.angle = 0
-        self.rot_vel = self.get_vel()
-        self.vel_x, self.vel_y = self.get_vel(), self.get_vel()
+        self.rot_vel = randrange(-SPEED, SPEED)
+        self.vel_x, self.vel_y = randrange(-SPEED, SPEED),randrange(-SPEED, SPEED)
 
-    def get_vel(self):
-        return randrange(-SPEED, SPEED)
     
     def update(self, delta_time = 0):  # delta_time を追加
         self.angle += self.rot_vel * self.handler.app.経過時間# rotate
-        
-        # translate
         self.position=(self.position[0]+self.vel_x * self.handler.app.経過時間, self.position[1]+self.vel_y * self.handler.app.経過時間)
-        if not (0<=self.position[0]<=画面幅):self.vel_x *= -1
-        if not (0<=self.position[1]<=画面高):self.vel_y *= -1
+        if not (0<=self.position[0]<=画面幅):self.vel_x *= -1# 反射
+        if not (0<=self.position[1]<=画面高):self.vel_y *= -1# 反射
 
 class スプライト管理:
     def __init__(self, アプリ ):
@@ -50,6 +45,7 @@ class スプライト管理:
 
 class 俺アプリ (arcade.Window):
     経過時間 = 0.0
+
     def __init__(self):
         super().__init__(*WIN_SIZE, center_window=True, antialiasing=False)
         self.文字 = arcade.Text(text='text', x=0, y=画面高 - FONT_SIZE,font_size=FONT_SIZE, color=arcade.color.GREEN, bold=True)
