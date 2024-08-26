@@ -11,7 +11,7 @@ SPEED = 200
 class スプライト(arcade.Sprite):
     def __init__(self, images, x, y):
         super().__init__()
-        self.position = (x, y)
+        self.center_x, self.center_y = x, y
         self.texture = choice(images)
         self.angle = 0
         self.rot_vel = randrange(-SPEED, SPEED)
@@ -20,13 +20,12 @@ class スプライト(arcade.Sprite):
 
     def update(self, delta_time):
         self.angle += self.rot_vel * delta_time
-        self.position = (self.position[0] + self.vel_x * delta_time, self.position[1] + self.vel_y * delta_time)
-        if not (0 <= self.position[0] <= 画面幅):self.vel_x *= -1
-        if not (0 <= self.position[1] <= 画面高):self.vel_y *= -1
+        self.center_x += self.vel_x * delta_time
+        self.center_y += self.vel_y * delta_time
+        if not (0 <= self.center_x <= 画面幅): self.vel_x *= -1
+        if not (0 <= self.center_y <= 画面高): self.vel_y *= -1
 
 class 俺アプリ(arcade.Window):
-    経過時間 = 0.0
-
     def __init__(self):
         super().__init__(*WIN_SIZE, center_window=True, antialiasing=False)
         self.images = [*map(arcade.load_texture, pathlib.Path(SPRITE_DIR_PATH).rglob('*.png'))]
