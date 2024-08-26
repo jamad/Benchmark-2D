@@ -1,8 +1,6 @@
-#from settings import *
 import arcade
-
 import pathlib
-from random import randrange, uniform
+from random import randrange
 
 WIN_SIZE = WIN_W, WIN_H = 1600, 900
 SPRITE_DIR_PATH = 'W:/Benchmark-2D/assets/sprites'
@@ -13,14 +11,12 @@ SPEED = 200
 NUM_SPRITES_PER_CLICK = 100
 NUM_ANGLES = 180
 
-
 class SpriteUnit(arcade.Sprite):
     def __init__(self, handler, x, y):
         super().__init__()
         self.handler = handler
         self.x, self.y = x, y
 
-        # empty range for randrange()
         self.image_ind = randrange(len(handler.images)) 
         self.texture = handler.images[self.image_ind]
         self.angle = 0
@@ -41,7 +37,7 @@ class SpriteUnit(arcade.Sprite):
     def rotate(self):
         self.angle += self.rot_vel * self.handler.app.dt
 
-    def update(self, delta_time: float = 0):  # delta_time を追加
+    def update(self, delta_time = 0):  # delta_time を追加
         self.rotate()
         self.translate()
         #self.set_position(self.x, self.y)  # much faster  but Exception has occurred: AttributeError 'SpriteUnit' object has no attribute 'set_position'
@@ -87,7 +83,7 @@ class App(arcade.Window):
         self.sprite_handler = SpriteHandler(self)
 
     def draw_fps(self):
-        self.text.text = f'{round(1 / self.dt, 1)} FPS | {len(self.sprite_handler.sprites)} SPRITES'
+        self.text.text = f'{1 // self.dt} FPS | {len(self.sprite_handler.sprites)} SPRITES'
         self.text.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
