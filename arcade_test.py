@@ -16,9 +16,9 @@ NUM_ANGLES = 180
 
 class SpriteUnit(arcade.Sprite):
     def __init__(self, handler, x, y):
+        super().__init__()
         self.handler = handler
         self.x, self.y = x, y
-        super().__init__()
 
         # empty range for randrange()
         self.image_ind = randrange(len(handler.images)) 
@@ -41,11 +41,12 @@ class SpriteUnit(arcade.Sprite):
     def rotate(self):
         self.angle += self.rot_vel * self.handler.app.dt
 
-    def update(self):
+    def update(self, delta_time: float = 0):  # delta_time を追加
         self.rotate()
         self.translate()
-        # self.center_x, self.center_y = self.x, self.y
-        self.set_position(self.x, self.y)  # much faster
+        #self.set_position(self.x, self.y)  # much faster  but Exception has occurred: AttributeError 'SpriteUnit' object has no attribute 'set_position'
+        self.center_x, self.center_y = self.x, self.y  # set_position の代わりに center_x, center_y を使用
+
 
 
 class SpriteHandler:
@@ -96,7 +97,7 @@ class App(arcade.Window):
             self.sprite_handler.del_sprite()
 
     def on_update(self, delta_time):
-        #self.sprite_handler.update()
+        self.sprite_handler.update()
         self.dt = delta_time
 
     def on_draw(self):
