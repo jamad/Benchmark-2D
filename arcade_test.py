@@ -1,5 +1,17 @@
-from settings import *
+#from settings import *
 import arcade
+
+import pathlib
+from random import randrange, uniform
+
+WIN_SIZE = WIN_W, WIN_H = 1600, 900
+SPRITE_DIR_PATH = 'assets/sprites'
+FONTS_DIR_PATH = 'assets/fonts'
+
+FONT_SIZE = 40
+SPEED = 200
+NUM_SPRITES_PER_CLICK = 100
+NUM_ANGLES = 180
 
 
 class SpriteUnit(arcade.Sprite):
@@ -7,7 +19,9 @@ class SpriteUnit(arcade.Sprite):
         self.handler = handler
         self.x, self.y = x, y
         super().__init__()
-        self.image_ind = randrange(len(handler.images))
+
+        # empty range for randrange()
+        self.image_ind = randrange(len(handler.images)) 
         self.texture = handler.images[self.image_ind]
         self.angle = 0
         self.rot_vel = self.get_vel()
@@ -65,14 +79,16 @@ class App(arcade.Window):
     def __init__(self):
         super().__init__(*WIN_SIZE, center_window=True, antialiasing=False)
         self.dt = 0.0
-        self.text = arcade.Text(text='text', start_x=0, start_y=WIN_H - FONT_SIZE,
+
+        # Text.__init__() got an unexpected keyword argument 'start_x'
+        self.text = arcade.Text(text='text', x=0, y=WIN_H - FONT_SIZE,
                                font_size=FONT_SIZE, color=arcade.color.GREEN, bold=True)
-        self.sprite_handler = SpriteHandler(self)
+        #self.sprite_handler = SpriteHandler(self)
 
     def draw_fps(self):
-        arcade.draw_xywh_rectangle_filled(self.text.x, self.text.y, *self.text.content_size,
-                                          arcade.color.BLACK)
-        self.text.text = f'{round(1 / self.dt, 1)} FPS | {len(self.sprite_handler.sprites)} SPRITES'
+        #arcade.draw_xywh_rectangle_filled(self.text.x, self.text.y, *self.text.content_size,                                          arcade.color.BLACK)
+        #self.text.text = f'{round(1 / self.dt, 1)} FPS | {len(self.sprite_handler.sprites)} SPRITES'
+        self.text.text = f'{round(1 / self.dt, 1)} FPS '
         self.text.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -82,12 +98,12 @@ class App(arcade.Window):
             self.sprite_handler.del_sprite()
 
     def on_update(self, delta_time):
-        self.sprite_handler.update()
+        #self.sprite_handler.update()
         self.dt = delta_time
 
     def on_draw(self):
         self.clear()
-        self.sprite_handler.draw()
+        #self.sprite_handler.draw()
         self.draw_fps()
 
 
