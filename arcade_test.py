@@ -48,8 +48,7 @@ class スプライト管理:
             self.sprites.append(スプライト(self, x, y))
 
     def get_images(self):
-        paths = [item for item in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png') if item.is_file()]
-        return [arcade.load_texture(str(path)) for path in paths]
+        return [arcade.load_texture(str(path)) for path in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png') ]
 
     def update(self):
         self.sprites.update()
