@@ -5,8 +5,8 @@ import pathlib
 from random import randrange, uniform
 
 WIN_SIZE = WIN_W, WIN_H = 1600, 900
-SPRITE_DIR_PATH = 'assets/sprites'
-FONTS_DIR_PATH = 'assets/fonts'
+SPRITE_DIR_PATH = 'W:/Benchmark-2D/assets/sprites'
+FONTS_DIR_PATH = 'W:/Benchmark-2D/assets/fonts'
 
 FONT_SIZE = 40
 SPEED = 200
@@ -83,7 +83,7 @@ class App(arcade.Window):
         # Text.__init__() got an unexpected keyword argument 'start_x'
         self.text = arcade.Text(text='text', x=0, y=WIN_H - FONT_SIZE,
                                font_size=FONT_SIZE, color=arcade.color.GREEN, bold=True)
-        #self.sprite_handler = SpriteHandler(self)
+        self.sprite_handler = SpriteHandler(self)
 
     def draw_fps(self):
         #arcade.draw_xywh_rectangle_filled(self.text.x, self.text.y, *self.text.content_size,                                          arcade.color.BLACK)
