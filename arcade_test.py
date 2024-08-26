@@ -15,7 +15,8 @@ class SpriteUnit(arcade.Sprite):
     def __init__(self, handler, x, y):
         super().__init__()
         self.handler = handler
-        self.x, self.y = x, y
+        self.position=(x,y)
+        #self.x, self.y = x, y
 
         self.image_ind = randrange(len(handler.images)) 
         self.texture = handler.images[self.image_ind]
@@ -27,23 +28,17 @@ class SpriteUnit(arcade.Sprite):
         return randrange(-SPEED, SPEED)
 
     def translate(self):
-        self.x += self.vel_x * self.handler.app.dt
-        self.y += self.vel_y * self.handler.app.dt
-        if self.x < 0 or self.x > WIN_W:
-            self.vel_x *= -1
-        if self.y < 0 or self.y > WIN_H:
-            self.vel_y *= -1
+        self.position=(self.position[0]+self.vel_x * self.handler.app.dt, self.position[1]+self.vel_y * self.handler.app.dt)
+        if not (0<=self.position[0]<=WIN_W):self.vel_x *= -1
+        if not (0<=self.position[1]<=WIN_H):self.vel_y *= -1
 
     def rotate(self):
         self.angle += self.rot_vel * self.handler.app.dt
 
     def update(self, delta_time = 0):  # delta_time を追加
         self.rotate()
-        self.translate()
-        #self.set_position(self.x, self.y)  # much faster  but Exception has occurred: AttributeError 'SpriteUnit' object has no attribute 'set_position'
-        self.center_x, self.center_y = self.x, self.y  # set_position の代わりに center_x, center_y を使用
-
-
+        self.translate()    
+        #self.position=(self.x,self.y)
 
 class SpriteHandler:
     def __init__(self, app):
@@ -56,11 +51,6 @@ class SpriteHandler:
         for i in range(NUM_SPRITES_PER_CLICK):
             self.sprites.append(SpriteUnit(self, x, y))
 
-    def del_sprite(self):
-        for i in range(NUM_SPRITES_PER_CLICK):
-            if len(self.sprites):
-                self.sprites.pop()
-
     def get_images(self):
         paths = [item for item in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png') if item.is_file()]
         return [arcade.load_texture(str(path)) for path in paths]
@@ -71,26 +61,22 @@ class SpriteHandler:
     def draw(self):
         self.sprites.draw()
 
-
 class App(arcade.Window):
     def __init__(self):
         super().__init__(*WIN_SIZE, center_window=True, antialiasing=False)
         self.dt = 0.0
-
-        # Text.__init__() got an unexpected keyword argument 'start_x'
-        self.text = arcade.Text(text='text', x=0, y=WIN_H - FONT_SIZE,
-                               font_size=FONT_SIZE, color=arcade.color.GREEN, bold=True)
+        self.text = arcade.Text(text='text', x=0, y=WIN_H - FONT_SIZE,font_size=FONT_SIZE, color=arcade.color.GREEN, bold=True)
         self.sprite_handler = SpriteHandler(self)
-
-    def draw_fps(self):
-        self.text.text = f'{1 // self.dt} FPS | {len(self.sprite_handler.sprites)} SPRITES'
-        self.text.draw()
+        self.spritecount=1
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.sprite_handler.add_sprite(x, y)
-        elif button == arcade.MOUSE_BUTTON_RIGHT:
-            self.sprite_handler.del_sprite()
+            self.spritecount+=NUM_SPRITES_PER_CLICK
+        elif button == arcade.MOUSE_BUTTON_RIGHT:            
+            count=min(NUM_SPRITES_PER_CLICK,len(self.sprites))
+            for i in range(count):self.sprites.pop()
+            self.spritecount-=count
 
     def on_update(self, delta_time):
         self.sprite_handler.update()
@@ -99,9 +85,8 @@ class App(arcade.Window):
     def on_draw(self):
         self.clear()
         self.sprite_handler.draw()
-        self.draw_fps()
+        self.text.text = f'{1 // self.dt} FPS | {self.spritecount} SPRITES'
+        self.text.draw()
 
-
-if __name__ == '__main__':
-    app = App()
-    app.run()
+app = App()
+app.run()
