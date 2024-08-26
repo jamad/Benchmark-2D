@@ -46,11 +46,11 @@ class 俺アプリ(arcade.Window):
     def on_update(self, delta_time):
         self.sprites.update(delta_time)
         self.FPS = 1//delta_time
+        self.文字.text = f'{self.FPS} FPS | {self.スプライト数} SPRITES'
 
     def on_draw(self):
         self.clear()
         self.sprites.draw()
-        self.文字.text = f'{self.FPS} FPS | {self.スプライト数} SPRITES'
         self.文字.draw()
 
 俺アプリ().run()
