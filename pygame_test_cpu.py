@@ -8,8 +8,9 @@ from random import randrange, choice
 
 import os
 current_directory = os.path.dirname(os.path.abspath(__file__)) # 現在のスクリプトのディレクトリを取得
-SPRITE_DIR_PATH = current_directory+'/sprites'
-#SPRITE_DIR_PATH =r'D:\myworks\project_github\practicePython\_folder_for_the_file_on_root\arcade/sprites'.replace('\\','/')
+#SPRITE_DIR_PATH = current_directory+'/sprites'
+SPRITE_DIR_PATH =r'D:\myworks\project_github\practicePython\_folder_for_the_file_on_root\arcade/sprites'.replace('\\','/')
+print(SPRITE_DIR_PATH)
 
 WIN_SIZE = 画面幅, 画面高 = 1600, 900
 FONT_SIZE = 40

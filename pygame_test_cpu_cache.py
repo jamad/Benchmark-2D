@@ -1,8 +1,21 @@
-from settings import *
+#from settings import *
 import pygame as pg
 import pygame.freetype as ft
 import sys
 
+import pathlib
+from random import randrange, choice
+
+import os
+current_directory = os.path.dirname(os.path.abspath(__file__)) # 現在のスクリプトのディレクトリを取得
+#SPRITE_DIR_PATH = current_directory+'/sprites'
+SPRITE_DIR_PATH =r'D:\myworks\project_github\practicePython\_folder_for_the_file_on_root\arcade/sprites'.replace('\\','/')
+print(SPRITE_DIR_PATH)
+
+WIN_SIZE = 画面幅, 画面高 = 1600, 900
+FONT_SIZE = 40
+SPEED = 200
+生成数 = 100
 
 class SpriteUnit(pg.sprite.Sprite):
     def __init__(self, handler, x, y):
@@ -19,15 +32,15 @@ class SpriteUnit(pg.sprite.Sprite):
     def rotate(self):
         self.angle += self.rot_vel * self.handler.app.dt
         self.image = self.handler.rot_cache[self.image_ind][
-            int(NUM_ANGLES * (self.angle % 360) / 360)]
+            int(生成数 * (self.angle % 360) / 360)]
         self.rect = self.image.get_rect()
 
     def translate(self):
         self.x += self.vel_x * self.handler.app.dt
         self.y += self.vel_y * self.handler.app.dt
-        if self.x < 0 or self.x > WIN_W:
+        if self.x < 0 or self.x > 画面幅:
             self.vel_x *= -1
-        if self.y < 0 or self.y > WIN_H:
+        if self.y < 0 or self.y > 画面高:
             self.vel_y *= -1
 
     def get_vel(self):
@@ -45,14 +58,14 @@ class SpriteHandler:
         self.images = self.load_images()
         self.rot_cache = self.get_rot_cache()
         self.group = pg.sprite.Group()
-        self.sprites = [SpriteUnit(self, WIN_W // 2, WIN_H // 2)]
+        self.sprites = [SpriteUnit(self, 画面幅 // 2, 画面高 // 2)]
 
     def get_rot_cache(self):
         rot_cache = {}
         for i, image in enumerate(self.images):
             rot_cache[i] = []
-            for angle in range(NUM_ANGLES):
-                rot_img = pg.transform.rotate(image, angle * 360 / NUM_ANGLES)
+            for angle in range(生成数):
+                rot_img = pg.transform.rotate(image, angle * 360 / 生成数)
                 rot_cache[i].append(rot_img)
         return rot_cache
 
@@ -65,11 +78,11 @@ class SpriteHandler:
             self.del_sprite()
 
     def add_sprite(self, x, y):
-        for i in range(NUM_SPRITES_PER_CLICK):
+        for i in range(生成数):
             self.sprites.append(SpriteUnit(self, x, y))
 
     def del_sprite(self):
-        for i in range(NUM_SPRITES_PER_CLICK):
+        for i in range(生成数):
             if len(self.sprites):
                 sprite = self.sprites.pop()
                 sprite.kill()
