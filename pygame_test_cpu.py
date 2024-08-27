@@ -1,15 +1,27 @@
-from settings import *
-import pygame as pg
+#from settings import *
+import pygame as pg# pip install pygame
 import pygame.freetype as ft
 import sys
+
+import pathlib
+from random import randrange, choice
+
+import os
+current_directory = os.path.dirname(os.path.abspath(__file__)) # 現在のスクリプトのディレクトリを取得
+SPRITE_DIR_PATH = current_directory+'/sprites'
+#SPRITE_DIR_PATH =r'D:\myworks\project_github\practicePython\_folder_for_the_file_on_root\arcade/sprites'.replace('\\','/')
+
+WIN_SIZE = 画面幅, 画面高 = 1600, 900
+FONT_SIZE = 40
+SPEED = 200
+生成数 = 100
 
 
 class SpriteUnit(pg.sprite.Sprite):
     def __init__(self, handler, x, y):
         self.handler = handler
         super().__init__(handler.group)
-        self.image_ind = randrange(len(handler.images))
-        self.image = handler.images[self.image_ind]
+        self.image =  choice(handler.images)
         self.rect = self.image.get_rect()
         self.x, self.y = x, y
         self.angle = 0
@@ -22,14 +34,14 @@ class SpriteUnit(pg.sprite.Sprite):
     def translate(self):
         self.x += self.vel_x * self.handler.app.dt
         self.y += self.vel_y * self.handler.app.dt
-        if self.x < 0 or self.x > WIN_W:
+        if self.x < 0 or self.x > 画面幅:
             self.vel_x *= -1
-        if self.y < 0 or self.y > WIN_H:
+        if self.y < 0 or self.y > 画面高:
             self.vel_y *= -1
 
     def rotate(self):
         self.angle += self.rot_vel * self.handler.app.dt
-        self.image = pg.transform.rotate(self.handler.images[self.image_ind], self.angle)
+        self.image = pg.transform.rotate(self.image, self.angle)
         self.rect = self.image.get_rect()
 
     def update(self):
@@ -43,14 +55,14 @@ class SpriteHandler:
         self.app = app
         self.images = self.load_images()
         self.group = pg.sprite.Group()
-        self.sprites = [SpriteUnit(self, WIN_W // 2, WIN_H // 2)]
+        self.sprites = [SpriteUnit(self, 画面幅 // 2, 画面高 // 2)]
 
     def add_sprite(self, x, y):
-        for i in range(NUM_SPRITES_PER_CLICK):
+        for i in range(生成数):
             self.sprites.append(SpriteUnit(self, x, y))
 
     def del_sprite(self):
-        for i in range(NUM_SPRITES_PER_CLICK):
+        for i in range(生成数):
             if len(self.sprites):
                 sprite = self.sprites.pop()
                 sprite.kill()
