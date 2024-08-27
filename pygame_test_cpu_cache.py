@@ -18,12 +18,12 @@ SPEED = 200
 生成数 = 100
 
 class SpriteUnit(pygame.sprite.Sprite):
-    def __init__(self, handler, x, y):
-        self.handler = handler
+    def __init__(self, app, x, y):
+        self.app = app
         self.x, self.y = x, y
-        super().__init__(handler.group)
-        self.image_ind = randrange(len(handler.images))
-        self.image = handler.images[self.image_ind]
+        super().__init__(app.group)
+        self.image_ind = randrange(len(app.images))
+        self.image = app.images[self.image_ind]
         self.rect = self.image.get_rect()
         self.angle = 0
         self.rot_vel = randrange(-SPEED, SPEED)
@@ -31,16 +31,15 @@ class SpriteUnit(pygame.sprite.Sprite):
         self.vel_y =  randrange(-SPEED, SPEED)
 
     def rotate(self):
-        self.angle += self.rot_vel * self.handler.dt
-        self.image = self.handler.rot_cache[self.image_ind][int(生成数 * (self.angle % 360) // 360)]
+        self.angle += self.rot_vel * self.app.dt
+        self.image = self.app.rot_cache[self.image_ind][int(生成数 * (self.angle % 360) // 360)]
         self.rect = self.image.get_rect()
 
     def translate(self):
-        self.x += self.vel_x * self.handler.dt
-        self.y += self.vel_y * self.handler.dt
+        self.x += self.vel_x * self.app.dt
+        self.y += self.vel_y * self.app.dt
         if self.x < 0 or self.x > 画面幅:  self.vel_x *= -1
         if self.y < 0 or self.y > 画面高:  self.vel_y *= -1
-
 
     def update(self):
         self.translate()
