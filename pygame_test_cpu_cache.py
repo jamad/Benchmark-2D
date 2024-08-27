@@ -26,8 +26,9 @@ class SpriteUnit(pygame.sprite.Sprite):
         self.image = handler.images[self.image_ind]
         self.rect = self.image.get_rect()
         self.angle = 0
-        self.rot_vel = self.get_vel()
-        self.vel_x, self.vel_y = self.get_vel(), self.get_vel()
+        self.rot_vel = randrange(-SPEED, SPEED)
+        self.vel_x =  randrange(-SPEED, SPEED)
+        self.vel_y =  randrange(-SPEED, SPEED)
 
     def rotate(self):
         self.angle += self.rot_vel * self.handler.dt
@@ -40,8 +41,6 @@ class SpriteUnit(pygame.sprite.Sprite):
         if self.x < 0 or self.x > 画面幅:  self.vel_x *= -1
         if self.y < 0 or self.y > 画面高:  self.vel_y *= -1
 
-    def get_vel(self):
-        return randrange(-SPEED, SPEED)
 
     def update(self):
         self.translate()
