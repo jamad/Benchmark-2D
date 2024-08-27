@@ -95,30 +95,30 @@ class SpriteHandler:
         self.group.update()
 
     def draw(self):
-        self.group.draw(self.app.screen)
+        self.group.draw(self.app.画面)
 
 class App:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode(WIN_SIZE)
-        self.clock = pygame.time.Clock()
-        self.font = ft.SysFont('Verdana', FONT_SIZE)
+        self.画面 = pygame.display.set_mode(WIN_SIZE)
+        self.クロック = pygame.time.Clock()
+        self.フォント = ft.SysFont('Verdana', FONT_SIZE)
         self.dt = 0.0
-        self.sprite_handler = SpriteHandler(self)
+        self.管理者 = SpriteHandler(self)
 
     def update(self):
         pygame.display.flip()
-        self.sprite_handler.update()
-        self.dt = self.clock.tick() * 0.001
+        self.管理者.update()
+        self.dt = self.クロック.tick() * 0.001
 
     def draw(self):
-        self.screen.fill('black')
-        self.sprite_handler.draw()
+        self.画面.fill('black')
+        self.管理者.draw()
         self.draw_fps()
 
     def draw_fps(self):
-        fps = f'{self.clock.get_fps() :.0f} FPS | {len(self.sprite_handler.sprites)} SPRITES'
-        self.font.render_to(self.screen, (0, 0), text=fps, fgcolor='green', bgcolor='black')
+        fps = f'{self.クロック.get_fps() :.0f} FPS | {len(self.管理者.sprites)} SPRITES'
+        self.フォント.render_to(self.画面, (0, 0), text=fps, fgcolor='green', bgcolor='black')
 
     def check_events(self):
         for e in pygame.event.get():
@@ -126,7 +126,7 @@ class App:
                 pygame.quit()
                 sys.exit()
             elif e.type == pygame.MOUSEBUTTONDOWN:
-                self.sprite_handler.on_mouse_press()
+                self.管理者.on_mouse_press()
 
     def run(self):
         while True:
