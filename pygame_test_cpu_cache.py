@@ -73,13 +73,11 @@ class SpriteHandler:
         mouse_button = pygame.mouse.get_pressed()
         if mouse_button[0]:
             x, y = pygame.mouse.get_pos()
-            self.add_sprite(x, y)
+            for i in range(生成数):
+                self.sprites.append(SpriteUnit(self, x, y))
         elif mouse_button[2]:
             self.del_sprite()
 
-    def add_sprite(self, x, y):
-        for i in range(生成数):
-            self.sprites.append(SpriteUnit(self, x, y))
 
     def del_sprite(self):
         for i in range(生成数):
@@ -114,9 +112,7 @@ class App:
     def draw(self):
         self.画面.fill('black')
         self.管理者.draw()
-        self.draw_fps()
-
-    def draw_fps(self):
+        
         fps = f'{self.クロック.get_fps() :.0f} FPS | {len(self.管理者.sprites)} SPRITES'
         self.フォント.render_to(self.画面, (0, 0), text=fps, fgcolor='green', bgcolor='black')
 
