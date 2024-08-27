@@ -25,23 +25,20 @@ class SpriteUnit(pygame.sprite.Sprite):
         self.image_ind = randrange(len(handler.images))
         self.image = handler.images[self.image_ind]
         self.rect = self.image.get_rect()
-        self.vel_x, self.vel_y = self.get_vel(), self.get_vel()
         self.angle = 0
         self.rot_vel = self.get_vel()
+        self.vel_x, self.vel_y = self.get_vel(), self.get_vel()
 
     def rotate(self):
         self.angle += self.rot_vel * self.handler.dt
-        self.image = self.handler.rot_cache[self.image_ind][
-            int(生成数 * (self.angle % 360) / 360)]
+        self.image = self.handler.rot_cache[self.image_ind][int(生成数 * (self.angle % 360) // 360)]
         self.rect = self.image.get_rect()
 
     def translate(self):
         self.x += self.vel_x * self.handler.dt
         self.y += self.vel_y * self.handler.dt
-        if self.x < 0 or self.x > 画面幅:
-            self.vel_x *= -1
-        if self.y < 0 or self.y > 画面高:
-            self.vel_y *= -1
+        if self.x < 0 or self.x > 画面幅:  self.vel_x *= -1
+        if self.y < 0 or self.y > 画面高:  self.vel_y *= -1
 
     def get_vel(self):
         return randrange(-SPEED, SPEED)
@@ -51,8 +48,6 @@ class SpriteUnit(pygame.sprite.Sprite):
         self.rotate()
         self.rect.center = self.x, self.y
 
-
-
 class App:
     def __init__(self):
         pygame.init()
@@ -60,7 +55,6 @@ class App:
         self.クロック = pygame.time.Clock()
         self.フォント = ft.SysFont('Verdana', FONT_SIZE)
         self.dt = 0.0
-        #self.管理者 = SpriteHandler(self)
         self.images = [pygame.image.load(path).convert_alpha() for path in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png')]
         self.rot_cache = self.get_rot_cache()
         self.group = pygame.sprite.Group()
@@ -74,18 +68,23 @@ class App:
                 rot_cache[i].append(pygame.transform.rotate(image, angle * 360 / 生成数))
         return rot_cache
 
-    def on_mouse_press(self):
-        mouse_button = pygame.mouse.get_pressed()
-        if mouse_button[0]:
-            x, y = pygame.mouse.get_pos()
-            for i in range(生成数):
-                self.sprites.append(SpriteUnit(self, x, y))
-        elif mouse_button[2]:
-            for i in range(生成数):
-                if len(self.sprites):
-                    sprite = self.sprites.pop()
-                    sprite.kill()
 
+    def check_events(self):
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
+                pygame.quit()
+                sys.exit()
+            elif e.type == pygame.MOUSEBUTTONDOWN:                
+                mouse_button = pygame.mouse.get_pressed()
+                if mouse_button[0]:
+                    x, y = pygame.mouse.get_pos()
+                    for i in range(生成数):
+                        self.sprites.append(SpriteUnit(self, x, y))
+                elif mouse_button[2]:
+                    for i in range(生成数):
+                        if len(self.sprites):
+                            sprite = self.sprites.pop()
+                            sprite.kill()
 
     def update(self):
         pygame.display.flip()
@@ -99,13 +98,6 @@ class App:
         fps = f'{self.クロック.get_fps() :.0f} FPS | {len(self.sprites)} SPRITES'
         self.フォント.render_to(self.画面, (0, 0), text=fps, fgcolor='green', bgcolor='black')
 
-    def check_events(self):
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
-                pygame.quit()
-                sys.exit()
-            elif e.type == pygame.MOUSEBUTTONDOWN:
-                self.on_mouse_press()
 
     def run(self):
         while True:
