@@ -65,8 +65,7 @@ class SpriteHandler:
         for i, image in enumerate(self.images):
             rot_cache[i] = []
             for angle in range(生成数):
-                rot_img = pygame.transform.rotate(image, angle * 360 / 生成数)
-                rot_cache[i].append(rot_img)
+                rot_cache[i].append(pygame.transform.rotate(image, angle * 360 / 生成数))
         return rot_cache
 
     def on_mouse_press(self):
