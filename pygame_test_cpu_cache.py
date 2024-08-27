@@ -55,7 +55,7 @@ class SpriteUnit(pygame.sprite.Sprite):
 class SpriteHandler:
     def __init__(self, app):
         self.app = app
-        self.images = self.load_images()
+        self.images = [pygame.image.load(path).convert_alpha() for path in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png')]
         self.rot_cache = self.get_rot_cache()
         self.group = pygame.sprite.Group()
         self.sprites = [SpriteUnit(self, 画面幅 // 2, 画面高 // 2)]
@@ -81,9 +81,6 @@ class SpriteHandler:
                     sprite = self.sprites.pop()
                     sprite.kill()
 
-    def load_images(self):
-        paths = [item for item in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png') if item.is_file()]
-        return [pygame.image.load(str(path)).convert_alpha() for path in paths]
 
     def update(self):
         self.group.update()
