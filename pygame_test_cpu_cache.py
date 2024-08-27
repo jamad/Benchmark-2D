@@ -76,14 +76,10 @@ class SpriteHandler:
             for i in range(生成数):
                 self.sprites.append(SpriteUnit(self, x, y))
         elif mouse_button[2]:
-            self.del_sprite()
-
-
-    def del_sprite(self):
-        for i in range(生成数):
-            if len(self.sprites):
-                sprite = self.sprites.pop()
-                sprite.kill()
+            for i in range(生成数):
+                if len(self.sprites):
+                    sprite = self.sprites.pop()
+                    sprite.kill()
 
     def load_images(self):
         paths = [item for item in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png') if item.is_file()]
