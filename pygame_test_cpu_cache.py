@@ -58,6 +58,7 @@ class App:
         self.rot_cache = self.get_rot_cache()
         self.group = pygame.sprite.Group()
         self.sprites = [SpriteUnit(self, 画面幅 // 2, 画面高 // 2)]
+        self.spritecount=1
 
     def get_rot_cache(self):
         rot_cache = {}
@@ -76,17 +77,17 @@ class App:
             elif e.type == pygame.MOUSEBUTTONDOWN:                
                 mouse_button = pygame.mouse.get_pressed()
                 if mouse_button[0]:
+                    self.spritecount+=生成数
                     x, y = pygame.mouse.get_pos()
                     for i in range(生成数):
                         self.sprites.append(SpriteUnit(self, x, y))
                 elif mouse_button[2]:
-                    for i in range(生成数):
-                        if len(self.sprites):
-                            sprite = self.sprites.pop()
-                            sprite.kill()
+                    for i in range(min(self.spritecount,生成数)):
+                        sprite = self.sprites.pop()
+                        sprite.kill()
+                    self.spritecount=max(0,self.spritecount-生成数)
 
     def update(self):
-        pygame.display.flip()
         self.group.update()
         self.dt = self.クロック.tick() * 0.001
 
@@ -94,8 +95,9 @@ class App:
         self.画面.fill('black')
         self.group.draw(self.画面)
         
-        fps = f'{self.クロック.get_fps() :.0f} FPS | {len(self.sprites)} SPRITES'
+        fps = f'{self.クロック.get_fps() :.0f} FPS | {self.spritecount} SPRITES'
         self.フォント.render_to(self.画面, (0, 0), text=fps, fgcolor='green', bgcolor='black')
+        pygame.display.flip()
 
 
     def run(self):
