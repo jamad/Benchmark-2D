@@ -1,5 +1,5 @@
 #from settings import *
-import pygame as pg
+import pygame
 import pygame.freetype as ft
 import sys
 
@@ -17,7 +17,7 @@ FONT_SIZE = 40
 SPEED = 200
 生成数 = 100
 
-class SpriteUnit(pg.sprite.Sprite):
+class SpriteUnit(pygame.sprite.Sprite):
     def __init__(self, handler, x, y):
         self.handler = handler
         self.x, self.y = x, y
@@ -57,7 +57,7 @@ class SpriteHandler:
         self.app = app
         self.images = self.load_images()
         self.rot_cache = self.get_rot_cache()
-        self.group = pg.sprite.Group()
+        self.group = pygame.sprite.Group()
         self.sprites = [SpriteUnit(self, 画面幅 // 2, 画面高 // 2)]
 
     def get_rot_cache(self):
@@ -65,14 +65,14 @@ class SpriteHandler:
         for i, image in enumerate(self.images):
             rot_cache[i] = []
             for angle in range(生成数):
-                rot_img = pg.transform.rotate(image, angle * 360 / 生成数)
+                rot_img = pygame.transform.rotate(image, angle * 360 / 生成数)
                 rot_cache[i].append(rot_img)
         return rot_cache
 
     def on_mouse_press(self):
-        mouse_button = pg.mouse.get_pressed()
+        mouse_button = pygame.mouse.get_pressed()
         if mouse_button[0]:
-            x, y = pg.mouse.get_pos()
+            x, y = pygame.mouse.get_pos()
             self.add_sprite(x, y)
         elif mouse_button[2]:
             self.del_sprite()
@@ -89,7 +89,7 @@ class SpriteHandler:
 
     def load_images(self):
         paths = [item for item in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png') if item.is_file()]
-        return [pg.image.load(str(path)).convert_alpha() for path in paths]
+        return [pygame.image.load(str(path)).convert_alpha() for path in paths]
 
     def update(self):
         self.group.update()
@@ -97,18 +97,17 @@ class SpriteHandler:
     def draw(self):
         self.group.draw(self.app.screen)
 
-
 class App:
     def __init__(self):
-        pg.init()
-        self.screen = pg.display.set_mode(WIN_SIZE)
-        self.clock = pg.time.Clock()
+        pygame.init()
+        self.screen = pygame.display.set_mode(WIN_SIZE)
+        self.clock = pygame.time.Clock()
         self.font = ft.SysFont('Verdana', FONT_SIZE)
         self.dt = 0.0
         self.sprite_handler = SpriteHandler(self)
 
     def update(self):
-        pg.display.flip()
+        pygame.display.flip()
         self.sprite_handler.update()
         self.dt = self.clock.tick() * 0.001
 
@@ -122,11 +121,11 @@ class App:
         self.font.render_to(self.screen, (0, 0), text=fps, fgcolor='green', bgcolor='black')
 
     def check_events(self):
-        for e in pg.event.get():
-            if e.type == pg.QUIT or (e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE):
-                pg.quit()
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
+                pygame.quit()
                 sys.exit()
-            elif e.type == pg.MOUSEBUTTONDOWN:
+            elif e.type == pygame.MOUSEBUTTONDOWN:
                 self.sprite_handler.on_mouse_press()
 
     def run(self):
@@ -135,10 +134,7 @@ class App:
             self.update()
             self.draw()
 
-
-if __name__ == '__main__':
-    app = App()
-    app.run()
+App().run()
 
 
 
