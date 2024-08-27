@@ -30,14 +30,14 @@ class SpriteUnit(pygame.sprite.Sprite):
         self.rot_vel = self.get_vel()
 
     def rotate(self):
-        self.angle += self.rot_vel * self.handler.app.dt
+        self.angle += self.rot_vel * self.handler.dt
         self.image = self.handler.rot_cache[self.image_ind][
             int(生成数 * (self.angle % 360) / 360)]
         self.rect = self.image.get_rect()
 
     def translate(self):
-        self.x += self.vel_x * self.handler.app.dt
-        self.y += self.vel_y * self.handler.app.dt
+        self.x += self.vel_x * self.handler.dt
+        self.y += self.vel_y * self.handler.dt
         if self.x < 0 or self.x > 画面幅:
             self.vel_x *= -1
         if self.y < 0 or self.y > 画面高:
@@ -52,9 +52,15 @@ class SpriteUnit(pygame.sprite.Sprite):
         self.rect.center = self.x, self.y
 
 
-class SpriteHandler:
-    def __init__(self, app):
-        self.app = app
+
+class App:
+    def __init__(self):
+        pygame.init()
+        self.画面 = pygame.display.set_mode(WIN_SIZE)
+        self.クロック = pygame.time.Clock()
+        self.フォント = ft.SysFont('Verdana', FONT_SIZE)
+        self.dt = 0.0
+        #self.管理者 = SpriteHandler(self)
         self.images = [pygame.image.load(path).convert_alpha() for path in pathlib.Path(SPRITE_DIR_PATH).rglob('*.png')]
         self.rot_cache = self.get_rot_cache()
         self.group = pygame.sprite.Group()
@@ -82,30 +88,15 @@ class SpriteHandler:
 
 
     def update(self):
-        self.group.update()
-
-    def draw(self):
-        self.group.draw(self.app.画面)
-
-class App:
-    def __init__(self):
-        pygame.init()
-        self.画面 = pygame.display.set_mode(WIN_SIZE)
-        self.クロック = pygame.time.Clock()
-        self.フォント = ft.SysFont('Verdana', FONT_SIZE)
-        self.dt = 0.0
-        self.管理者 = SpriteHandler(self)
-
-    def update(self):
         pygame.display.flip()
-        self.管理者.update()
+        self.group.update()
         self.dt = self.クロック.tick() * 0.001
 
     def draw(self):
         self.画面.fill('black')
-        self.管理者.draw()
+        self.group.draw(self.画面)
         
-        fps = f'{self.クロック.get_fps() :.0f} FPS | {len(self.管理者.sprites)} SPRITES'
+        fps = f'{self.クロック.get_fps() :.0f} FPS | {len(self.sprites)} SPRITES'
         self.フォント.render_to(self.画面, (0, 0), text=fps, fgcolor='green', bgcolor='black')
 
     def check_events(self):
@@ -114,7 +105,7 @@ class App:
                 pygame.quit()
                 sys.exit()
             elif e.type == pygame.MOUSEBUTTONDOWN:
-                self.管理者.on_mouse_press()
+                self.on_mouse_press()
 
     def run(self):
         while True:
